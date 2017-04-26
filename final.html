@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<script src = "js/d3.min.js"></script>
+		<script src = "js/c3-0.4.10/c3.min.js"></script>
+		<script src = "js/genderChart.js"></script>
+		<script src = "js/trend.js"></script>
+		<link href = "js/c3-0.4.10/c3.min.css" rel = "stylesheet"></link>
+		<link rel="stylesheet" href="css/jquery-ui.css"> 
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui.js"></script>
+	
+		<title>Customer Summary</title>
+		
+	</head>
+	<style>
+	body{
+			font:14px sans-serif;
+			background-color: white;
+		}
+	
+	#heading{
+			//padding-left:300px;
+			color:steelblue;
+		}
+	#logo{
+			border: none;
+		}
+		
+	#bill,#analysis,#back{
+
+	background-color :steelblue;
+	border-top-right-radius: 0.75em;
+	border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : black;
+	font-size : 15px;}
+	#t,#t1{
+	
+			box-shadow: 0px 0px 0px #888888;
+			border : 1px solid rgba(0,0,0,0.3);
+			font-weight: bold;
+			color:white;
+			//color:black;
+			font:20px ;
+			
+		}
+		td#details,td#datapie,td#smspie,td#bill,td#std,td#roam,td#local{
+			//border: 1px solid rgba(0, 0, 0, 0.1);
+			border : 1px solid rgba(0,0,0,0.1);
+			box-shadow: 5px 5px 5px #888888;
+		}
+	.inline {
+   //display:inline;
+   margin-left:10px;
+   //float:left;
+}
+.c3-axis-y text {
+   fill: black;
+   font-size:13px;
+   //font-weight:bold;
+}
+.c3-axis-x text {
+    font-size:12px;
+    fill:black;
+}
+	
+	</style>
+	<body>
+	
+	<table height=100% width=100% border=1 id="main">
+		<table height=10% width=100%>
+			<tr>
+					<td>
+						<a href='Login.html'><input type = "button" class = "inline" id = "back" value = "Back" ></input></a>
+					</td>
+		
+					<td id = "logo">
+						<font id ="heading" size = 10px >&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; 
+						&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+						Customer Summary </font></a>
+					</td>
+					<td>
+						<a href='detailed.html'><input type = "button" class = "inline" id = "analysis" value = "View Detailed Analysis" ></input>
+					</td>
+					<td>
+						<a href='billpage.html'><input type = "button" class = "inline" id = "bill" value = "View Bill Summary" ></input>
+					</td>
+			</tr>
+			
+		</table>
+		<table  height=55% width=100%>
+			<td  rowspan = 1 colspan = 1 width = 30%>
+				<table width=100% height=100% id="table">
+					<tr>
+						<td id="t" bgcolor="steelblue">Customer Details</td>
+					</tr>
+					<tr>
+						<td id="details">
+						</td>
+									
+					</tr>
+								
+				</table>	
+			</td>
+			<td  rowspan = 1 colspan = 1 width = 35%>
+				<table width=100% height=100% id="table">
+					<tr height=5%>
+						<td id="t" bgcolor="steelblue">Data Usage (In MBs)</td>
+					</tr>
+					<tr>
+						<td id="datapie">
+						</td>
+									
+					</tr>
+								
+				</table>	
+			</td>
+			<td  rowspan = 1 colspan = 1 width = 35%>
+				<table width=100% height=100% id="table">
+					<tr height=5%>
+						<td id="t" bgcolor="steelblue">Number of SMS Sent<td>
+					</tr>
+					<tr>
+						<td id="smspie">
+						</td>
+									
+					</tr>
+								
+				</table>	
+			</td>
+						
+		</table>
+		<table  height=35% width=100%>
+			<tr>
+				<td width=30%>
+					<table height=100% width=100%>
+							<tr height=10% width=100%><td id="t" bgcolor="steelblue">Local Calls</td></tr>
+									<tr height=90% width=100%> 
+										<td>
+											<div id="local"></div>
+										</td>	
+									</tr>
+								</table>
+							</td>
+							<td width=35%>
+								<table height=100% width=100%>
+									<tr height=10% width=100%><td id="t" bgcolor="steelblue">STD Calls</td></tr>
+									<tr height=90% width=100%>
+										<td>
+											<div id="std"></div>
+										</td>	
+									</tr>
+								</table>
+							</td>
+							<td width=35%>
+								<table height=100% width=100%>
+									<tr width=100% height=5%><td id="t" bgcolor="steelblue" >Roaming Calls</td></tr>
+									<tr height=95% width=100%>
+										<td>
+											<div id="roam"></div>
+										</td>	
+									</tr>
+								</table>
+							</td>
+						</tr>
+		</table>
+	</table>
+	
+	<script>
+	
+		var filteredData;
+				
+		var arr1=["Customer ID","Customer Name","Mobile Number","Billing Address","City","Gender","Age","Occupation"]
+		enteredID = localStorage["Cust_ID"];
+		
+		//******************** Cutomer Details ******************//
+		
+		d3.csv("cust_dummy2.csv",function(data){
+					IDs = data.map(function(d){return d.cust_id})
+					//console.log(IDs)
+					tabData = data[IDs.indexOf(enteredID)]
+					//console.log(tabData)
+					
+					var vals = Object.keys(tabData).map(function(key) {
+						return tabData[key];
+					});
+					//console.log(vals)
+		
+					trs = d3.select("#details").selectAll("tr")
+							.data(arr1)
+							.enter()
+							.append("tr")
+							.attr("width","5px")	
+						
+					trs.append("td")
+					   .text(function(d){return(d)})
+					   .attr("align", "left")
+					   
+					   
+					trs.append("td").text(":")
+					
+					trs.append("td")
+					   .text(function(d,i){return(vals[i])})
+					   
+					})
+		
+		//******* Data Collection *********//
+		
+		var arr2=["act_id","date","act_type","act_time","act_units","act_bytes","network","cust_id","bill_id","plan_id"]
+				
+		d3.csv("ActivityDetails1.csv",function(data){
+					
+					filteredData = data.filter(function(d){return d.cust_id == enteredID})
+					console.log(filteredData)
+					
+		//******* Data Usage Pie*****//
+		
+		
+	
+		var usageData=d3.nest()
+						.key(function(d){return d.act_type})
+						.rollup(function(d){return  d3.sum(d,function(e){return e.act_bytes})})
+						.entries(filteredData);			
+		
+		var dataUsage = usageData.filter(function(d){return parseInt(d.key)==7 || parseInt(d.key)==8})
+		//console.log(dataUsage)	
+					
+		dataUsage.forEach(function(d){
+			if (d.key == "7"){
+				d.key = "Upload";
+			}
+			else{
+				d.key = "Download";
+			}
+			});
+			var pieData= {}
+			pieData.data = {};
+			pieData.tooltip = {};		
+			pieData.bindto = "#datapie";
+				
+			pieData.data.type = 'pie';
+				
+			
+			var data2 = {};
+			var sites2 = [];
+			dataUsage.forEach(function(e) {
+			sites2.push(e.key);
+				data2[e.key] = e.values;
+			}) 
+				
+					
+			pieData.data.keys = {
+									
+					value: sites2
+			};
+			pieData.data.json = [data2];
+					
+				
+			pieData.data.colors={"Upload":"#6d85bc","Download":"#e59866"};
+			
+			pieData.tooltip.format={
+								value: function (value, ratio, id, index) { return value+" ("+(ratio*100).toFixed(2)+"%)"; }
+							}
+							
+			pieData.size={height:180,width:430}	
+			var data_piechart = c3.generate(pieData);
+			
+			
+			//*******SMS Pie ********//
+			
+		var smsdata=d3.nest()
+						.key(function(d){return d.act_type})
+						.rollup(function(d){return  d3.sum(d,function(e){return e.act_units})})
+						.entries(filteredData);			
+		
+		var smsUsage = smsdata.filter(function(d){return parseInt(d.key)==9 || parseInt(d.key)==10|| parseInt(d.key)==13})
+		//console.log(dataUsage)	
+					
+		smsUsage.forEach(function(d){
+			if (d.key == "9"){
+				d.key = "Local";
+			}
+			else if (d.key == "10"){
+				d.key = "National";
+			}
+			else{
+				d.key = "Roaming";
+			}
+			});
+			var pieData2= {}
+			pieData2.data = {};
+					
+			pieData2.bindto = "#smspie";
+				
+			pieData2.data.type = 'pie';
+				
+			
+			var data3 = {};
+			var sites3 = [];
+			pieData2.tooltip = {};		
+			
+			smsUsage.forEach(function(e) {
+			sites3.push(e.key);
+				data3[e.key] = e.values;
+			}) 
+				
+					
+			pieData2.data.keys = {
+									
+					value: sites3
+			};
+			pieData2.data.json = [data3];
+					
+				
+			pieData2.data.colors={"Local":"#819FF7","National":"#36a9ae","Roaming":"#F7819F"};
+			
+			pieData2.tooltip.format={
+								value: function (value, ratio, id, index) { return value+" ("+(ratio*100).toFixed(2)+"%)"; }
+							}
+			//pieData2.size={height:210,width:210};
+		
+			var sms_piechart = c3.generate(pieData2);
+			
+			
+			
+
+			var callData=d3.nest()
+											.key(function(d){return d.act_type})
+											.key(function(d){return d.network})
+											.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+											.entries(filteredData);
+											
+					console.log(callData);
+					
+					//*********************** Local Call Data*****************//
+					
+					
+					var localData = callData.filter(function(d){return parseInt(d.key)==1|| parseInt(d.key)==2})
+					
+					
+					localData.forEach(function(d){	
+						if (d.key === "1"){
+							d["type"] = "Incoming"
+						}
+						else{
+							d["type"] = "Outgoing"
+						}
+						d.values.forEach(function(g){
+							if (g.key === "0"){
+								d["same network"] = g.values
+							}
+							else{
+								d["other network"] = g.values
+							}
+						})
+					})
+					console.log(localData)
+
+				var call_stat = {}
+				call_stat.data = {}, call_stat.axis= {};
+				var call_stat_chart;
+				
+				
+				call_stat.bindto = "#local";
+			/*	call_stat.size = {
+								width : screen.availWidth * 0.38,
+								height : screen.availHeight * 0.37
+				};
+			*/
+				call_stat.data.type = 'bar';
+				call_stat.data.keys = {
+									x: 'type',
+									value: ['same network','other network']
+				};
+				call_stat.data.colors={"same network":"#f27f6d","other network":"#5499c7"};
+				call_stat.legend = {position : 'bottom'};
+				call_stat.axis =  {
+								x:{
+									
+									type: 'category',height : 45
+								},
+								y:{
+									label: {text:'	Minutes',position:'outer-middle'},
+								
+								}
+				};
+				call_stat.data.json = localData;
+				call_stat.size={height:250,width:400}	
+				call_stat_chart = c3.generate(call_stat);
+				
+				//*********************** STD Call Data*****************//
+					
+					
+					var stdData = callData.filter(function(d){return parseInt(d.key)==3|| parseInt(d.key)==4})
+					
+					
+					stdData.forEach(function(d){	
+						if (d.key === "3"){
+							d["type"] = "Incoming"
+						}
+						else{
+							d["type"] = "Outgoing"
+						}
+						d.values.forEach(function(g){
+							if (g.key === "0"){
+								d["same network"] = g.values
+							}
+							else{
+								d["other network"] = g.values
+							}
+						})
+					})
+					console.log(stdData)
+
+				var call_stat2 = {}
+				call_stat2.data = {}, call_stat2.axis= {};
+				var call_stat_chart2;
+				
+				
+				call_stat2.bindto = "#std";
+			/*	call_stat.size = {
+								width : screen.availWidth * 0.38,
+								height : screen.availHeight * 0.37
+				};
+			*/
+				call_stat2.data.type = 'bar';
+				call_stat2.data.keys = {
+									x: 'type',
+									value: ['same network','other network']
+				};
+				call_stat2.legend = {position : 'bottom'};
+				call_stat2.axis =  {
+								x:{
+									
+									type: 'category',height : 50
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+								
+								}
+				};
+				call_stat2.data.colors={"same network":"#f27f6d","other network":"#5499c7"};
+				call_stat2.data.json = stdData;
+				call_stat2.size={height:250,width:400}		
+				call_stat_chart2 = c3.generate(call_stat2);
+				
+				//*********************** Roam Call Data*****************//
+					
+					
+					var roamData = callData.filter(function(d){return parseInt(d.key)==5|| parseInt(d.key)==6})
+					
+					
+					roamData.forEach(function(d){	
+						if (d.key === "5"){
+							d["type"] = "Incoming"
+						}
+						else{
+							d["type"] = "Outgoing"
+						}
+						d.values.forEach(function(g){
+							if (g.key === "0"){
+								d["same network"] = g.values
+							}
+							else{
+								d["other network"] = g.values
+							}
+						})
+					})
+					console.log(roamData)
+
+				var call_stat3 = {}
+				call_stat3.data = {}, call_stat3.axis= {};
+				var call_stat_chart3;
+				
+				
+				call_stat3.bindto = "#roam";
+			/*	call_stat.size = {
+								width : screen.availWidth * 0.38,
+								height : screen.availHeight * 0.37
+				};
+			*/
+				call_stat3.data.type = 'bar';
+				call_stat3.data.keys = {
+									x: 'type',
+									value: ['same network','other network']
+				};
+				call_stat3.legend = {position : 'bottom'};
+				call_stat3.axis =  {
+								x:{
+									
+									type: 'category',height : 50
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+							
+								}
+				};
+				call_stat3.data.colors={"same network":"#f27f6d","other network":"#5499c7"};
+				call_stat3.data.json = roamData;
+				call_stat3.size={height:250,width:400}	
+				call_stat_chart3 = c3.generate(call_stat3);
+					
+					
+	}
+					
+				);
+				
+		
+	
+	</script>
+	
+	</body>
+	
+	</html>

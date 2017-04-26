@@ -1,0 +1,12 @@
+cust_id,name ,connection_no,address,city,gender,age,occupation ,bill_id,segment
+9999988888,Rahul Khanna,9665677251,"213, Paratha Wala Galli, Chandni Chowk",Delhi,M,45,Businessman,B700,P
+570601,Aditi Mahadik,9665677252,"B-24, Kala Ghoda Lane",Mumbai,F,20,Doctor,B701,G
+570602,Aditya Raj,9665677253,"""Rajkamal"", Marine Drive",Mumbai,M,24,Doctor,B702,S
+570603,Kritika Venkat,9665677254,"Ad-229, Salt Lake City",Kolkata,F,54,Doctor,B703,P
+570604,RamKumar Nayar,9665677255,"Da-179, Salt Lake City",Kolkata,M,24,Student,B704,G
+570605,Deepmala Kumari,9665677256,"""Amarkilla"", Near Lulu Mall",Kozhikode,F,44,Nurse,B705,S
+570606,Rakesh Roshan,9665677257,"Ambika Wadi, Lower Parel",Mumbai,M,26,Businessman,B706,P
+570607,Veenita Dutta,9665677258,"Heaven's abode, near paradise beach",Chennai,F,24,Businessman,B707,G
+570608,Vijay Singh,9665677259," PNB Building, 4th Floor, 5 Wallace Street, Fort Mumbai",Mumbai,M,18,Engineer,B708,S
+570609,Vinaya Shastri,9665677260,Mallathalli (Near Jnana Bharathi Campus),Bangalore,F,24,Engineer,B709,P
+570610,Aman Varma,9665677261,"Anjaneya , Airport Road, Kodihalli",Bangalore,M,34,Engineer,B710,G

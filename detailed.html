@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<script src = "js/d3.min.js"></script>
+		<script src = "js/c3-0.4.10/c3.min.js"></script>
+		<script src = "js/genderChart.js"></script>
+		<script src = "js/trend.js"></script>
+		<link href = "js/c3-0.4.10/c3.min.css" rel = "stylesheet"></link>
+		<link rel="stylesheet" href="css/jquery-ui.css"> 
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui.js"></script>
+	
+		<title>Detailed Analysis</title>
+		
+	</head>
+	<style>
+	#logo{
+			
+			border: none;
+		}
+	#heading{
+			//padding-left:300px;
+			color:steelblue;
+		}
+		#t,#t1{
+	
+			box-shadow: 0px 0px 0px #888888;
+			border : 1px solid rgba(0,0,0,0.3);
+			font-weight: bold;
+			color:white;
+			//color:black;
+			font:20px ;
+			
+		}
+		td#calltrend,td#datatrend,td#segment,td#offers{
+			//border: 1px solid rgba(0, 0, 0, 0.1);
+			border : 1px solid rgba(0,0,0,0.1);
+			box-shadow: 5px 5px 5px #888888;
+		}
+		#tab1{
+	background-color :steelblue ;
+	border-top-right-radius: 0.75em;
+	border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : black;
+	font-size : 15px;
+}
+
+
+#tab0{
+	background-color:steelblue;
+	border-top-right-radius: 0.75em;
+	border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : black;
+	font-size : 15px;
+}
+#avail{
+			height :250px;
+		}
+		
+	table#tab11{
+	
+	font-weight:bold;
+	
+	}
+		
+		#back{
+	background-color :steelblue;
+	//border-top-right-radius: 0.75em;
+	//border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : white;
+	font-size : 20px;}
+	
+	.c3-axis-y text {
+   fill: black;
+   font-size:12px;
+   //font-weight:bold;
+}
+.c3-axis-x text {
+    font-size:0px;
+    fill:black;
+}
+		
+	</style>
+	<body>
+		<table height=100% width=100% cellpadding=100 border=1 id="main">
+			<table height=10% width=100%>
+				<tr>
+					
+					<td>
+						<a href='final.html'><input type = "button" class = "inline" id = "back" value = "Back to Summary" ></input></a>
+					</td>
+				
+					<td id = "logo">
+						<font id ="heading" size = 10px >&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;Detailed Analysis </font></a>
+					</td>
+					
+					<td>
+						<span id="heading" style = "float:right;display:block;margin-bottom:1.5px; margin-right:10px;">
+								<b>Filter Months: <b><select type = 'select' id = "filter1" style="background:#cacfd2">
+									<option  value = "six" selected style="background:#cacfd2"><b>Last Six Months</option>
+									<option  value = "three" style="background:#cacfd2"><b>Last Three Months</option>
+									<option value = "two"style="background:#cacfd2"><b>Last Two Months</option>
+								</select>
+						</span>
+									
+					</td>
+					
+				</tr>
+			</table>
+			<table height=35% width=100%>
+				<td  rowspan = 1 colspan = 1 width = 50%>
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue">Call Trend</td>
+								</tr>
+								<tr>
+									<td id="calltrend">
+										
+									</td>
+									
+								</tr>
+								
+							</table>	
+						</td>
+						<td  rowspan = 1 colspan = 1 width = 50%>
+							<table width=100% height=100% id="table">
+								<tr id="t1">
+									<td id="t1" bgcolor="steelblue">Data Trend</td>
+								</tr>
+								<tr>
+									<td id="datatrend">
+										
+									</td>
+									
+								</tr>
+							</table>	
+						</td>
+			</table>
+			<table height=55% width=100%>
+				<td  rowspan = 1 colspan = 1 width = 33%>
+						<table width=100% height=100% id="table">
+								<tr height=5%>
+									<td id="t1" bgcolor="steelblue">Attrition Score</td>
+								</tr>
+								<tr>
+									<td id="attrition">
+										<div id="attrition" ></div>
+										<font face="Comic sans MS" size="3" color="steelblue"><b>The attrition score is calculated 
+										after observing decreasing call and data usage . This customer will probably drop out soon. Exciting offers can help us retain the customer.<b></font>	
+									</td>
+	
+									
+								</tr>
+								
+								
+					
+						</table>	
+					</td>
+						<td  rowspan = 1 colspan = 1 width = 33%>
+							<table width=100% height=100% id="table">
+								<tr >
+									<td id="t1" bgcolor="steelblue" height=5%>Customer Segment</td>
+								</tr>
+								<tr id="segment" >
+									
+									<td>
+										<table height=100% width=100%>
+											<tr height=30%>
+												<td width=35%>
+													<img  id = "logo" align="top" src="images/gold.png"> </img>
+												</td>
+												<td width=65%> 
+												<font face="Comic sans MS" size="3" color="steelblue"><b>This customer is a  gold member
+												whose average bill value is between Rs500-RS1500<b></font>									
+												</td>
+											</tr>
+											</table>
+											</td>
+											</tr>
+											<tr>
+											<td>
+										<table height=100% width=100%>
+											<tr height=50% width=100%>
+												<td >
+													<font face="Comic sans MS" size="3" color="steelblue"><b>Silver: Customer is a silver member
+															whose average bill value is between Rs0-RS500<b></font>
+												</td>
+											</tr>
+											<tr height=50% width=100%>
+												<td width=100%>
+												
+												<font face="Comic sans MS" size="3" color="steelblue"><b>Platinum: Customer is a platinum member
+															whose average bill value is between Rs1600 and above<b></font>
+												</td>
+											</tr>
+										</table>
+										
+									</td>
+							</tr>
+							</table>	
+						</td>
+						<td  rowspan = 1 colspan = 1 width = 33%>
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue" height=5% >Offers</td>
+								</tr>
+								<tr>
+									<td id="offers" height=5%>
+										<input type = "button" class = "inline" id = "tab0" value = "Availed" onclick="getAvailed()"></input>
+										<input type = "button" class = "inline" id = "tab1" value = "Suggested" onclick="getSuggested()"></input>
+									</td> 
+									
+								</tr>
+								<tr>
+									<td height=90%>
+										<div id="avail"></div>
+									</td>
+								</tr>
+								
+								
+							</table>		
+						</td>
+			
+			</table>
+		
+		</table>
+		<script>
+			
+			var filteredData,dataFilter1;
+			enteredID = localStorage["Cust_ID"]	;
+			
+			//******* Data Collection *********//
+		
+		var arr2=["act_id","date","act_type","act_time","act_units","act_bytes","network","cust_id","bill_id","plan_id"]
+				
+		d3.csv("ActivityDetails1.csv",function(data){
+					
+					filteredData = data.filter(function(d){return d.cust_id == enteredID})
+					console.log(filteredData)
+					getComboVal();
+					
+					d3.select("#filter1").on("change",getComboVal);
+					
+					
+					function getComboVal(){
+						
+						var e = document.getElementById("filter1"); 
+						//console.log(e)
+						var months = e.options[e.selectedIndex].value;
+						if(months == "six"){
+							dataFilter1 = filteredData;
+							console.log("six");		
+						}
+						else if(months == "three")
+						{
+							dataFilter1=data.filter(function(d) {return d.month=="4"||d.month=="5"||d.month=="6"});
+							console.log("three");
+						}
+						else
+						{
+							dataFilter1=data.filter(function(d) {return d.month=="6"||d.month=="5"});
+							console.log("two");
+						}
+						
+						datagraph();
+						callgraph();
+						
+					}
+						
+						
+				});	
+					//*************  Call trendnd ****************************//
+				
+					function callgraph(){
+						console.log("hi")
+						var trend_sum_callData=d3.nest()
+													.key(function(d){return d.month})
+													.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+													.entries(dataFilter1);
+							//console.log(trend_sum_callData)	;
+							
+							var trendData = trend_sum_callData.filter(function(d){return parseInt(d.key)==1||parseInt(d.key)==2||parseInt(d.key)==3
+																						||parseInt(d.key)==4||parseInt(d.key)==5||parseInt(d.key)==6});
+							//console.log(trendData);
+									
+							trendData.forEach(function(d){
+										if (d.key == "1"){
+											d.key = "Jan";
+										}
+										else if(d.key=="2")
+										{
+											d.key = "Feb";
+										}
+										else if(d.key=="3")
+										{
+											d.key = "Mar";
+										}
+										else if(d.key=="4")
+										{
+											d.key = "April";
+										}
+										else if(d.key=="5")
+										{
+											d.key = "May";
+										}
+										else{
+											d.key = "Jun";
+										}
+									});
+			
+							var barTrend = {}
+							barTrend.data = {};
+							
+							//barTrend.data.onclick= {function(){ window.location.assign("file:///D:/MyStuff/Work/KYC/call_stats", '_blank')}};
+
+							
+							barTrend.bindto = "#calltrend";
+						
+							barTrend.data.type = 'bar';
+							
+							
+						
+							var data_trend = {};
+							var sites_trend = [];
+							
+							trendData.forEach(function(e) {
+								sites_trend.push(e.key);
+								//console.log(sites_trend);
+								data_trend[e.key] = e.values;
+								//console.log(data_trend);
+							})
+						
+							//console.log(barTrend)  
+							barTrend.data.keys = {				
+												value: sites_trend
+							};
+							barTrend.data.json = [data_trend];
+							
+							barTrend.data.colors={"Jan":"#c0392b","Feb":"#2980b9","Mar":"#1abc9c","April":"#f39c12","May":"#5d6d7e","Jun":"#9b59b6"};
+							
+						
+							barTrend.data.labels={ format: function(value, ratio, id) {
+													//console.log(value);
+													return value;}}; 
+													
+							barTrend.axis =  {
+								x:{
+									
+									type: 'category',height : 40
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+								
+								}
+							};
+													
+							barTrend.size={height:220,width:600}
+					
+							var barTrend_chart = c3.generate(barTrend); 
+							
+							//barTrend_chart.width=10;
+							
+						}	
+							
+							//************** Data Usage**********************//
+				function datagraph(){			
+							var sum_dataUsage=d3.nest()
+													.key(function(d){return d.month})
+													.rollup(function(d){return  d3.sum(d,function(e){return e.act_bytes})})
+													.entries(dataFilter1);
+							//console.log(sum_dataUsage)	;
+							
+							var usageData = sum_dataUsage.filter(function(d){return parseInt(d.key)==1||parseInt(d.key)==2||parseInt(d.key)==3
+																						||parseInt(d.key)==4||parseInt(d.key)==5||parseInt(d.key)==6});
+							//console.log(usageData);
+									
+							usageData.forEach(function(d){
+										if (d.key == "1"){
+											d.key = "Jan";
+										}
+										else if(d.key=="2")
+										{
+											d.key = "Feb";
+										}
+										else if(d.key=="3")
+										{
+											d.key = "Mar";
+										}
+										else if(d.key=="4")
+										{
+											d.key = "April";
+										}
+										else if(d.key=="5")
+										{
+											d.key = "May";
+										}
+										else{
+											d.key = "Jun";
+										}
+									});
+					
+							var barDataUsage = {}
+							barDataUsage.data = {};
+							
+							barDataUsage.bindto = "#datatrend";
+						
+							barDataUsage.data.type = 'bar';
+							
+							
+						
+							var data_trend1 = {};
+							var sites_trend1 = [];
+							
+							usageData.forEach(function(e) {
+								sites_trend1.push(e.key);
+								//console.log(sites_trend1);
+								data_trend1[e.key] = e.values;
+								//console.log(data_trend1);
+							})
+						
+							//console.log(barDataUsage)  
+							barDataUsage.data.keys = {				
+												value: sites_trend1
+							};
+							barDataUsage.data.json = [data_trend1];
+							
+							barDataUsage.data.colors={"Jan":"#c0392b","Feb":"#2980b9","Mar":"#1abc9c","April":"#f39c12","May":"#5d6d7e","Jun":"#9b59b6"};
+							
+						
+							barDataUsage.data.labels={ format: function(value, ratio, id) {
+													//console.log(value);
+													return value;}}; 
+													
+							barDataUsage.axis =  {
+								x:{
+									
+									type: 'category',height : 50
+								},
+								y:{
+									label: {text:'Data Usage(In MBs)',position:'outer-middle'},
+								
+								}
+							};
+								
+						
+							barDataUsage.size={height:220,width:600}
+							
+							var barDataUsage_chart = c3.generate(barDataUsage); 
+							
+							//barDataUsage_chart.width=10;
+					
+							
+					}
+					
+					
+					//*******************  OFFERS TAB *******************************//
+				var data1;
+				getAvailed(data1);
+				function getAvailed(data1){
+					d3.csv("offers_availed.csv",function(data1){
+					
+						Row(data1);
+					})
+					
+					
+					}
+				function getSuggested(data1){
+				
+						d3.csv("offers_suggested.csv",function(data1){
+					
+						Row(data1);
+					})
+				
+				
+				
+				}
+				
+			
+			
+				function Row(data1){
+					
+					id = data1.map(function(d){return d.id})
+					//console.log(id)
+					d3.select("#avail").select("table").remove();
+					d3.select("#avail").append("table").attr("id","tab11")
+					
+					
+				
+						trs1 = d3.select("#tab11").selectAll("tr")
+							.data(data1)
+							.enter()
+							.append("tr")
+							//.style("background-color","#a6acaf")
+							.style("font-family","Comic sans MS	")
+							.style("font-size","3")
+							.style("color","steelblue")
+							.attr("width","3px")
+							.attr("height","40px");
+				
+						
+					trs1.append("td")
+					   .text(function(d){return(d["offers"])})
+					   .attr("align", "left")
+					  
+					trs1.append("td").text(":")
+					trs1.append("td")
+					   .text(function(d){return(d["amount"])})
+					   .attr("align", "center")
+				
+				
+				}
+				
+			
+			//********************* Attrition Score******************//
+				var data2 = d3.range(1000);
+			//console.log(data)
+
+			var val = 670;
+
+			var colors = d3.scale.linear()
+			    .domain([0,1000])
+			    .range(["#FDE5C6", "#B30201"]);
+			    
+			var scales = d3.scale.linear()
+			    .domain([0,1000])
+			    .range([0, 400]);
+
+
+		
+
+			var pos;
+					
+			var svg = d3.select("#attrition").append("svg").attr("width",450).append("g").attr("id","indi");
+
+			var rects = svg.selectAll(".rects")
+				.data(data2)
+				.enter()
+				.append("rect")
+				.attr("y", 30)
+				.attr("height", 50)
+				.attr("x", function(d){ if (d == val){ pos = scales(d)+10} return scales(d)+10;})
+				.attr("width",1)
+				.attr("fill", function(d){ return colors(d)});
+
+
+				svg.append("image")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("xlink:href", "images/arrow.jpg")
+		    	.attr("x", pos - (15/2))
+		    	.attr("y", 80)
+		    	.attr("width", 15)
+                .attr("height", 15);
+
+				svg.append("text")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("x", pos)
+		    	.attr("text-anchor","middle")
+		    	.attr("y", 40 + 75)
+		    	.text(val);
+
+		    	svg.append("text")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("x", scales(0)+10)
+		    	.attr("text-anchor","middle")
+		    	.attr("y", 95)
+		    	.text(0);
+
+		    	svg.append("text")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("x", scales(1000)+10)
+		    	.attr("text-anchor","middle")
+		    	.attr("y", 95)
+		    	.text(1000);
+			
+		</script>
+	</body>
+	</html>
+	

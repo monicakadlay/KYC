@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<script src = "js/d3.min.js"></script>
+		<script src = "js/c3-0.4.10/c3.min.js"></script>
+		<script src = "js/genderChart.js"></script>
+		<script src = "js/trend.js"></script>
+		<link href = "js/c3-0.4.10/c3.min.css" rel = "stylesheet"></link>
+		<link rel="stylesheet" href="css/jquery-ui.css"> 
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui.js"></script>
+	
+		<title>Call Statistics</title>
+		
+	</head>
+	<style>
+	#head1{
+		height : 40px;
+		font-size : 40px;
+		color: 	steelblue;
+		float:top;
+		margin-top : 50px;
+		}
+	#t{
+			box-shadow: 0px 0px 0px #888888;
+			border : 1px solid rgba(0,0,0,0.3);
+			font-weight: bold;
+			color:white;
+			//color:black;
+			font:20px ;
+			
+	}
+	td#std,td#roam,td#local{
+			//border: 1px solid rgba(0, 0, 0, 0.1);
+			border : 1px solid rgba(0,0,0,0.1);
+			box-shadow: 5px 5px 5px #888888;
+	}
+	</style>
+	<body>
+		<table width=100% height=70% border=0>
+			<tr height=10%>
+				<td id = "head1" align = "center" width = 100%>
+						<b>Call Statistics(last six months)</b>
+				</td>
+			</tr>
+			<tr height=10%></tr>
+			<tr height=80%>
+				<td>
+					<table width=100% height=100% border=0>
+						<tr>
+							<td width=33%>
+								<table height=100% width=100%>
+									<tr height=10% width=100%><td id="t" bgcolor="steelblue">Local Calls</td></tr>
+									<tr height=90% width=100%> 
+										<td>
+											<div id="local"></div>
+										</td>	
+									</tr>
+								</table>
+							</td>
+							<td width=33%>
+								<table height=100% width=100%>
+									<tr height=10% width=100%><td id="t" bgcolor="steelblue">STD Calls</td></tr>
+									<tr height=90% width=100%>
+										<td>
+											<div id="std"></div>
+										</td>	
+									</tr>
+								</table>
+							</td>
+							<td width=33%>
+								<table height=100% width=100%>
+									<tr height=10% width=100%><td id="t" bgcolor="steelblue">Roaming Calls</td></tr>
+									<tr height=90% width=100%>
+										<td>
+											<div id="roam"></div>
+										</td>	
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	<script>
+		enteredID = localStorage["Cust_ID"]	
+		var arr2=["act_id","date","month","day","act_type","act_time","act_units","act_bytes","network","cust_id","bill_id","plan_id"]
+		d3.csv("ActivityDetails1.csv",function(data){
+					
+					filteredData = data.filter(function(d){return d.cust_id == enteredID})
+					console.log(filteredData)
+					
+					var callData=d3.nest()
+											.key(function(d){return d.act_type})
+											.key(function(d){return d.network})
+											.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+											.entries(filteredData);
+											
+					console.log(callData);
+					
+					//*********************** Local Call Data*****************//
+					
+					
+					var localData = callData.filter(function(d){return parseInt(d.key)==1|| parseInt(d.key)==2})
+					
+					
+					localData.forEach(function(d){	
+						if (d.key === "1"){
+							d["type"] = "Incoming"
+						}
+						else{
+							d["type"] = "Outgoing"
+						}
+						d.values.forEach(function(g){
+							if (g.key === "0"){
+								d["same network"] = g.values
+							}
+							else{
+								d["other network"] = g.values
+							}
+						})
+					})
+					console.log(localData)
+
+				var call_stat = {}
+				call_stat.data = {}, call_stat.axis= {};
+				var call_stat_chart;
+				
+				
+				call_stat.bindto = "#local";
+			/*	call_stat.size = {
+								width : screen.availWidth * 0.38,
+								height : screen.availHeight * 0.37
+				};
+			*/
+				call_stat.data.type = 'bar';
+				call_stat.data.keys = {
+									x: 'type',
+									value: ['same network','other network']
+				};
+				call_stat.legend = {position : 'bottom'};
+				call_stat.axis =  {
+								x:{
+									
+									type: 'category',height : 45
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+								
+								}
+				};
+				call_stat.data.json = localData;
+					
+				call_stat_chart = c3.generate(call_stat);
+				
+				//*********************** STD Call Data*****************//
+					
+					
+					var stdData = callData.filter(function(d){return parseInt(d.key)==3|| parseInt(d.key)==4})
+					
+					
+					stdData.forEach(function(d){	
+						if (d.key === "3"){
+							d["type"] = "Incoming"
+						}
+						else{
+							d["type"] = "Outgoing"
+						}
+						d.values.forEach(function(g){
+							if (g.key === "0"){
+								d["same network"] = g.values
+							}
+							else{
+								d["other network"] = g.values
+							}
+						})
+					})
+					console.log(stdData)
+
+				var call_stat2 = {}
+				call_stat2.data = {}, call_stat2.axis= {};
+				var call_stat_chart2;
+				
+				
+				call_stat2.bindto = "#std";
+			/*	call_stat.size = {
+								width : screen.availWidth * 0.38,
+								height : screen.availHeight * 0.37
+				};
+			*/
+				call_stat2.data.type = 'bar';
+				call_stat2.data.keys = {
+									x: 'type',
+									value: ['same network','other network']
+				};
+				call_stat2.legend = {position : 'bottom'};
+				call_stat2.axis =  {
+								x:{
+									
+									type: 'category',height : 50
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+								/*	tick:{
+											format: function (d) {
+														if (d >= 1000000) {
+															return '$' + d / 1000000 + 'M';
+														} else {
+															return '$' + d / 1000 + 'K';
+														}
+														return '$' + d; 
+													}
+									}
+								*/
+								}
+				};
+				call_stat2.data.json = stdData;
+					
+				call_stat_chart2 = c3.generate(call_stat2);
+				
+				//*********************** Roam Call Data*****************//
+					
+					
+					var roamData = callData.filter(function(d){return parseInt(d.key)==5|| parseInt(d.key)==6})
+					
+					
+					roamData.forEach(function(d){	
+						if (d.key === "5"){
+							d["type"] = "Incoming"
+						}
+						else{
+							d["type"] = "Outgoing"
+						}
+						d.values.forEach(function(g){
+							if (g.key === "0"){
+								d["same network"] = g.values
+							}
+							else{
+								d["other network"] = g.values
+							}
+						})
+					})
+					console.log(roamData)
+
+				var call_stat3 = {}
+				call_stat3.data = {}, call_stat3.axis= {};
+				var call_stat_chart3;
+				
+				
+				call_stat3.bindto = "#roam";
+			/*	call_stat.size = {
+								width : screen.availWidth * 0.38,
+								height : screen.availHeight * 0.37
+				};
+			*/
+				call_stat3.data.type = 'bar';
+				call_stat3.data.keys = {
+									x: 'type',
+									value: ['same network','other network']
+				};
+				call_stat3.legend = {position : 'bottom'};
+				call_stat3.axis =  {
+								x:{
+									
+									type: 'category',height : 50
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+								/*	tick:{
+											format: function (d) {
+														if (d >= 1000000) {
+															return '$' + d / 1000000 + 'M';
+														} else {
+															return '$' + d / 1000 + 'K';
+														}
+														return '$' + d; 
+													}
+									}
+								*/
+								}
+				};
+				call_stat3.data.json = roamData;
+					
+				call_stat_chart3 = c3.generate(call_stat3);
+					
+		})
+	</script>
+
+	</body>
+	</html>

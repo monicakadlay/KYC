@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<script src = "js/d3.min.js"></script>
+		<script src = "js/c3-0.4.10/c3.min.js"></script>
+		<script src = "js/genderChart.js"></script>
+		<script src = "js/trend.js"></script>
+		<link href = "js/c3-0.4.10/c3.min.css" rel = "stylesheet"></link>
+		<link rel="stylesheet" href="css/jquery-ui.css"> 
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui.js"></script>
+	
+		<title>Customer Details</title>
+		
+	</head>
+	<style>
+	body{
+			font:14px sans-serif;
+			background-color: white;
+		}
+	
+	#heading{
+			//padding-left:300px;
+			color:steelblue;
+		}
+	table#gaugeTable{
+			width : 100%;	
+			border-spacing : 5px;		
+		}
+	#inChart{
+			border-collapse : collapse;
+			width : 100%;
+			//border : 1px solid black; 
+			border : 1px solid rgba(0,0,0,0.1);
+		}
+			#t{
+			box-shadow: 0px 0px 0px #888888;
+			border : 1px solid rgba(0,0,0,0.3);
+			font-weight: bold;
+			color:white;
+			//color:black;
+			font:20px ;
+			
+		}
+				td#pie12,td#details,td#std,td#roam,td#local{
+			//border: 1px solid rgba(0, 0, 0, 0.1);
+			border : 1px solid rgba(0,0,0,0.1);
+			box-shadow: 5px 5px 5px #888888;
+		}
+		</style>
+		<body>
+				<table id="main" height=100% width=100% cellpadding=3 border=1>
+					<table width=100% height=10%> 
+						<td id = "logo">
+							<center><font id ="heading" size = 10px >Customer Summary </font>
+						</td>
+					</table>
+					<table width=100% height=45%> 
+						<td  rowspan = 1 colspan = 1 width = 40%>
+							<table width=100% height=100% id="tab1">
+								<tr>
+									<td id="t" bgcolor="steelblue">Customer Details</td>
+								</tr>
+								<tr>
+									<td id="details">
+									</td>
+									
+								</tr>
+							</table>	
+						</td>
+						
+						<td colspan = 1 width = 40% >
+							<table width=100% height=100% id="tab2">
+								<tr>
+									<td id="t" bgcolor="steelblue">Category Split</td>
+								</tr>
+								<tr>
+									<td id="pie12">
+							</table>			
+						</td>
+					</table>
+					<table width=100% height=45%>
+						<td  rowspan = 1 colspan = 1 width = 33%>
+							<table width=100% height=100% id="tab1">
+								<tr>
+									<td id="t" bgcolor="steelblue">Local Calls</td>
+								</tr>
+								<tr>
+									<td id="local">
+									</td>
+									
+								</tr>
+							</table>	
+						</td>
+						<td rowspan=1 colspan = 1 width = 33% >
+							<table width=100% height=100% id="tab2">
+								<tr>
+									<td id="t" bgcolor="steelblue">National Roaming</td>
+								</tr>
+								<tr>
+									<td id="roam"></td>
+							</table>			
+						</td>
+						<td rowspan=1 colspan = 1 width = 33% >
+							<table width=100% height=100% id="tab2">
+								<tr>
+									<td id="t" bgcolor="steelblue">STD Calls</td>
+								</tr>
+								<tr>
+									<td id="std"></td>
+							</table>			
+						</td>
+						
+					
+					</table>
+
+				</table>
+						
+	
+		<script>
+				var filteredData,out_callData,std_out_callData,roam_out_callData;
+			
+				var arr1=["Customer ID","Customer Name","Mobile Number","Billing Address","City","Gender","Date of Birth","Age","bill_id","segment"]
+				enteredID = localStorage["Cust_ID"]	
+				
+				
+				
+				d3.csv("cust_dummy2.csv",function(data){
+					IDs = data.map(function(d){return d.cust_id})
+					tabData = data[IDs.indexOf(enteredID)]
+					
+					var vals = Object.keys(tabData).map(function(key) {
+						return tabData[key];
+					});
+					
+		
+					trs = d3.select("#details").selectAll("tr")
+							.data(arr1)
+							.enter()
+							.append("tr")
+							.attr("width","5px")	
+						
+					trs.append("td")
+					   .text(function(d){return(d)})
+					   .attr("align", "left")
+					trs.append("td").text(":")
+					
+					trs.append("td")
+					   .text(function(d,i){return(vals[i])})
+					
+					
+					
+					
+					
+				})
+			
+
+				
+				var arr2=["act_id","date","act_type","act_time","act_units","act_bytes(MBs)","network","cust_id","bill_id","plan_id"]
+				
+				d3.csv("ActivityDetails1.csv",function(data){
+					
+					filteredData = data.filter(function(d){return d.cust_id == enteredID})
+					
+		
+					
+					var out_callData=d3.nest()
+											.key(function(d){return d.act_type})
+											.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+											.entries(filteredData);
+											
+					console.log(out_callData)	
+					
+					var outgoingData = out_callData.filter(function(d){return parseInt(d.key)==2||parseInt(d.key)==4||parseInt(d.key)==6})
+					console.log(outgoingData)	
+					
+					outgoingData.forEach(function(d){
+						if (d.key == "2"){
+							d.key = "Local";
+						}
+						else if(d.key=="4"){
+							d.key = "STD";
+						}
+						else{
+							d.key = "Roaming";
+						}
+					});
+					
+					var pie1 = {}
+					pie1.data = {};
+					
+					pie1.bindto = "#pie12";
+				
+					pie1.data.type = 'pie';
+				
+				
+					
+					var data = {};
+					var sites = [];
+					outgoingData.forEach(function(e) {
+						sites.push(e.key);
+						data[e.key] = e.values;
+					}) 
+				
+					
+					pie1.data.keys = {
+										
+										value: sites
+					};
+					pie1.data.json = [data];
+					var piechart = c3.generate(pie1);
+					
+					var sum_callData=d3.nest()
+											.key(function(d){return d.act_type})
+											.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+											.entries(filteredData);
+											
+					console.log(sum_callData)
+						
+					// *********************** PIE CHART FOR LOCAL DATA **************************//
+					
+		
+				
+					var localData = sum_callData.filter(function(d){return parseInt(d.key)<=2})
+					console.log(localData)
+
+					localData.forEach(function(d){
+						if (d.key == "1"){
+							d.key = "Incoming";
+						}
+						else{
+							d.key = "Outgoing";
+						}
+					});
+					console.log(localData)
+					var pielocal = {}
+					pielocal.data = {};
+					
+					pielocal.bindto = "#local";
+				
+					pielocal.data.type = 'pie';
+				
+			
+					var data1 = {};
+					var sites1 = [];
+					localData.forEach(function(e) {
+						
+						sites1.push(e.key);
+						data1[e.key] = e.values;
+					}) 
+				
+					
+					pielocal.data.keys = {
+										
+										value: sites1
+					};
+					pielocal.data.json = [data1];
+					
+					pielocal.data.colors={"Incoming":"#1f77b4","Outgoing":"#aec7e8"};
+					
+				
+					pielocal.data.labels={ format: function(value, ratio, id) {
+												console.log(value);
+												return value;}};
+			
+					var local_piechart = c3.generate(pielocal);
+					
+					
+					
+					
+					// *********************** PIE CHART FOR ROAMING DATA **************************/
+					
+		
+				
+					var roamData = sum_callData.filter(function(d){return parseInt(d.key)==5 || parseInt(d.key)==6})
+					console.log(roamData)	
+					
+					roamData.forEach(function(d){
+						if (d.key == "5"){
+							d.key = "Incoming";
+						}
+						else{
+							d.key = "Outgoing";
+						}
+					});
+					var pieRoam = {}
+					pieRoam.data = {};
+					
+					pieRoam.bindto = "#roam";
+				
+					pieRoam.data.type = 'pie';
+				
+			
+					var data2 = {};
+					var sites2 = [];
+					roamData.forEach(function(e) {
+						sites2.push(e.key);
+						data2[e.key] = e.values;
+					}) 
+				
+					
+					pieRoam.data.keys = {
+										
+										value: sites2
+					};
+					pieRoam.data.json = [data2];
+					
+				
+					pieRoam.data.colors={"Incoming":"#2ca02c","Outgoing":"#98df8a"	};
+					pieRoam.data.labels= true;
+					var roam_piechart = c3.generate(pieRoam);
+					
+					// *********************** PIE CHART FOR STD DATA **************************//
+					
+		
+					
+					var stdData = sum_callData.filter(function(d){return parseInt(d.key)== 3|| parseInt(d.key)==4})
+					console.log(stdData)	
+					
+					stdData.forEach(function(d){
+						if (d.key == "3"){
+							d.key = "Incoming";
+						}
+						else{
+							d.key = "Outgoing";
+						}
+					});
+					
+					var pieStd = {}
+					pieStd.data = {};
+					
+					pieStd.bindto = "#std";
+				
+					pieStd.data.type = 'pie';
+				
+			
+					var data3 = {};
+					var sites3 = [];
+					
+					stdData.forEach(function(e) {
+						sites3.push(e.key);
+						data3[e.key] = e.values;
+					}) 
+				
+					
+					pieStd.data.keys = {
+										
+										value: sites3
+					};
+					pieStd.data.json = [data3];
+					
+					pieStd.data.colors={"Incoming":"#ff7f0e","Outgoing":"#ffbb78"};
+					pieStd.data.labels= true;
+					
+					pieStd.data.labels={format: function(d){return d.value}};
+
+					
+					
+					var std_piechart = c3.generate(pieStd);
+					
+					console.log(pieStd.data)
+					
+					
+		});
+					
+
+					
+					
+			
+					
+					
+				
+	
+			
+			
+		</script>
+		</body>
+		</html>

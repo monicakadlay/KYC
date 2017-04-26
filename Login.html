@@ -1,0 +1,128 @@
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<script src = "js/d3.min.js"></script>
+		<script src = "js/c3-0.4.10/c3.min.js"></script>
+		<script src = "js/trend.js"></script>
+		<link href = "js/c3-0.4.10/c3.min.css" rel = "stylesheet"></link>
+		<link rel="stylesheet" href="css/jquery-ui.css"> 
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui.js"></script>
+	
+		<title>KYC</title>
+		
+	</head>
+	<style>
+	
+	body{
+		font: 13px sans-serif;
+		size:150px;
+		background-image: url("images/telecom_expense_management_banner_alt.jpg");
+		background-position: right top;
+
+		}	
+	#logo{
+			
+			border: none;
+		}
+	#head1{
+		height : 150px;
+		font-size : 40px;
+		color: white;
+		float:top;
+		margin-top : 50px;
+		}
+		#lab{
+		height : 100px;
+		font-size : 30px;
+		color: white;
+		float:top;
+		margin-top : 50px;
+		}
+	
+	.button {
+		//border: 2px solid black;
+		//padding: 2px 8px; 
+		background: white;
+		width: 50px;
+		border-radius: 20px;
+		font: 17px arial;
+		height:34px;
+		}
+	#textBox{
+		//height:20px;
+		width:150px;
+		//border :2px solid black;
+		font-size:20px;
+	}
+	#lab{
+		font: 25px arial;
+	}
+	#buttonDiv{
+		display:inline;
+		height:30px;
+		width:40px;
+		//border:none;
+		
+	}
+	
+	</style>
+	<body>
+		
+		<table id="main" width=100% height=100% border=1>
+			<table height=10%>
+				<tr colspan=1 rowspan=1>
+					<td id = "logo" > <img id="logo" src="logo.png" ></img></td>
+					<td id = "head1">
+						 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+						 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;<b><u> Know Your Customer</b></u>
+					</td>
+				</tr>
+			</table>
+			<table height=90%>
+				<tr colspan=1 rowspan=1>
+					<td width=100% align = "center">
+						&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+						 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+						 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+						 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+						 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+						
+						<label id = "lab"> <b>Customer ID :</b></label>
+						<input type = "text" pattern = "[0-9]" id = "textBox" maxlength = "10" onkeypress = "return isNumberKey(event)"/>
+						<button name="button1" value="OK" type="submit" class = "button"  onClick= "proceed()">Go</button>
+					</td>
+				</tr>
+			</table>
+			
+		</table>
+		
+		
+		<script>
+			document.getElementById('textBox').value="";
+			function proceed(){
+				enteredID = document.getElementById('textBox').value;
+				console.log(enteredID)
+				
+				d3.csv("cust_dummy2.csv",function(data){
+					
+					IDs = data.map(function(d){return d.cust_id} )
+					if(enteredID.length<10){
+						alert("Min 10 digits")
+					}
+					else{
+						if(IDs.indexOf(enteredID) != -1){
+							localStorage['Cust_ID'] = enteredID
+							window.location="final.html"
+						}
+						else{
+							alert("Invalid customer ID")
+						}
+					}
+					
+					
+				} )
+				
+				
+			}
+		</script>

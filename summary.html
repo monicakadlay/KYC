@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<script src = "js/d3.min.js"></script>
+		<script src = "js/c3-0.4.10/c3.min.js"></script>
+		<script src = "js/genderChart.js"></script>
+		<script src = "js/trend.js"></script>
+		<link href = "js/c3-0.4.10/c3.min.css" rel = "stylesheet"></link>
+		<link rel="stylesheet" href="css/jquery-ui.css"> 
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui.js"></script>
+	
+		<title>Customer Summary</title>
+		
+	</head>
+	<style>
+	body{
+			font:14px sans-serif;
+			background-color: white;
+		}
+	
+	#heading{
+			//padding-left:300px;
+			color:steelblue;
+		}
+	table#gaugeTable{
+			width : 100%;	
+			border-spacing : 5px;		
+		}
+	#inChart{
+			border-collapse : collapse;
+			width : 100%;
+			//border : 1px solid black; 
+			border : 1px solid rgba(0,0,0,0.1);
+		}
+			#t,#t1{
+			box-shadow: 0px 0px 0px #888888;
+			border : 1px solid rgba(0,0,0,0.3);
+			font-weight: bold;
+			color:white;
+			//color:black;
+			font:20px ;
+			
+		}
+				td#pie12,td#details,td#category,td#data,td#bill,td#churn,td#offers , #avail{
+			//border: 1px solid rgba(0, 0, 0, 0.1);
+			border : 1px solid rgba(0,0,0,0.1);
+			box-shadow: 5px 5px 5px #888888;
+		}
+
+#tab1{
+	background-color :#d35400 ;
+	border-top-right-radius: 0.75em;
+	border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : black;
+	font-size : 15px;
+}
+
+
+#tab0{
+	background-color:#d35400;
+	border-top-right-radius: 0.75em;
+	border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : black;
+	font-size : 15px;
+}
+.inline {
+   //display:inline;
+   margin-left:10px;
+   //float:left;
+}
+		#logo{
+			
+			border: none;
+		}
+		#avail{
+			height :250px;
+		}
+		
+#bill{
+
+	background-color :#f0b27a;
+	border-top-right-radius: 0.75em;
+	border-top-left-radius: 0.75em;
+	margin : 0px 0px 0px 0px;
+	border : none;
+	color : black;
+	font-size : 15px;}
+	
+	
+#tool,#tool1{	
+    position: absolute;			
+    text-align: center;			
+    width: 250px;					
+    height: 55px;					
+    padding: 2px;				
+    font: 16px times new roman;		
+	color: white;
+	background: steelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+.hidden{
+	display: none;
+}
+		</style>
+		<body>
+		
+				<table id="main" height=100% width=100% border=0>
+					<table width=100% height=10% border=0>
+								<tr>
+									<td id = "logo"	 align="left" height=1%>
+										<img  id = "logo" src="images/gold.png"> </img>
+										
+									</td>
+									
+									<td id = "logo">
+										 <font id ="heading" size = 10px >&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;Customer Summary </font></a>
+									</td>
+									
+								<td>
+									<a href='billpage.html'><input type = "button" class = "inline" id = "bill" value = "View Bill Summary" ></input>
+								</td>
+									<td>
+									<span style = "float:right;display:block;margin-bottom:1.5px; margin-right:10px;">
+										Filter: <select type = 'select' id = "filter1" >
+											<option value = "six" selected>Last Six Months</option>
+											<option value = "three">Last Three Months</option>
+											<option value = "two">Last Two Months</option>
+											<option value = "fif">Last Fifteen Days</option>
+										</select>
+									</span>
+									
+									</td>
+								</tr>
+								
+					</table>
+					<table width=100% height=55%> 
+						<td  rowspan = 1 colspan = 1 width = 30%>
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue">Customer Details</td>
+								</tr>
+								<tr>
+									<td id="details">
+										
+									</td>
+									
+								</tr>
+								
+							</table>	
+						</td>
+						<td  rowspan = 1 colspan = 1 width = 20%>
+							<table width=100% height=100% id="table">
+								<tr id="t1">
+									<td id="t1" bgcolor="steelblue">Attrition Score</td>
+								</tr>
+								<tr>
+									<td id="churn">
+										<div id="abc"></div>
+									</td>
+									
+								</tr>
+							</table>	
+						</td>
+						<td colspan = 1 width = 40% >
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue"><a id="t" href="file:///D:/MyStuff/Work/KYC/call_stats">Call Trend</a></td>
+								</tr>
+								<tr>
+									<td id="pie12">
+							</table>			
+						</td>
+					</table>
+					<table width=100% height=35%>
+						<td  rowspan = 1 colspan = 1 width =30%>
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue">Outgoing Call Statistics(Minutes)</td>
+								</tr>
+								<tr>
+									<td >Minutes Used:<div id="totalmin"></div></td>
+								</tr>
+								<tr>
+									<td id="category">
+									</td>
+									
+								</tr>
+							</table>	
+						</td>
+						<td rowspan=1 colspan = 1 width = 30% >
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue">Data Usage Pattern(In MBs)</td>
+								</tr>
+								<tr>
+									<td id="data"></td> </tr>
+							</table>			
+						</td>
+						<td rowspan=1 colspan = 1 width = 40% >
+							<table width=100% height=100% id="table">
+								<tr>
+									<td id="t" bgcolor="steelblue" height=5% >Offers</td>
+								</tr>
+								<tr>
+									<td id="offers" height=5% width=>
+										<input type = "button" class = "inline" id = "tab0" value = "Availed" onclick="getAvailed()"></input>
+										<input type = "button" class = "inline" id = "tab1" value = "Suggested" onclick="getSuggested()"></input>
+									</td> 
+									
+								</tr>
+								<tr>
+									<td height=90%>
+										<div id="avail"></div>
+									</td>
+								</tr>
+								
+								
+							</table>			
+						</td>
+						
+					
+					</table>
+
+				</table>
+						
+	
+		<script>
+				var filteredData,out_callData,std_out_callData,roam_out_callData,dataFilter1;
+				
+				var arr1=["Customer ID","Customer Name","Mobile Number","Billing Address","City","Gender","Age","Occupation"]
+				enteredID = localStorage["Cust_ID"]	
+				
+				//var availed_offers=["offers","amount"]
+				
+				
+				var tooltip = d3.select("#logo").append("div").attr("id","tool").attr("class","hidden")
+				d3.select("#logo")
+					.on("mouseover",function(d){
+						tooltip.classed("hidden",false);
+						tooltip.text("A gold member is a 3-6 year old customer whose average bill value is between Rs500-RS1500");
+					})
+					.on("mouseout",function(d){
+						tooltip.classed("hidden",true);
+						
+					})
+					
+			/*	var tooltip_attrition = d3.select("#t1").append("div").attr("id","tool1").attr("class","hidden")
+				d3.select("#logo")
+					.on("mouseover",function(d){
+						tooltip_attrition.classed("hidden",false);
+						tooltip_attrition.text("A gold member is a 3-6 year old customer whose average bill value is between Rs500-RS1500");
+					})
+					.on("mouseout",function(d){
+						tooltip_attrition.classed("hidden",true);
+						
+					}) */
+				
+				//*******************  OFFERS TAB *******************************//
+				getAvailed(data);
+				
+				function getAvailed(data){
+					d3.csv("offers_availed.csv",function(data){
+					
+						Row(data);
+					})
+					
+					
+					}
+				function getSuggested(data){
+				
+						d3.csv("offers_suggested.csv",function(data){
+					
+						Row(data);
+					})
+				
+				
+				
+				}
+				
+			
+			
+				function Row(data){
+					
+					id = data.map(function(d){return d.id})
+					//console.log(id)
+					d3.select("#avail").select("table").remove();
+					d3.select("#avail").append("table").attr("id","tab11")
+					
+					
+				
+						trs1 = d3.select("#tab11").selectAll("tr")
+							.data(data)
+							.enter()
+							.append("tr")
+							.style("background-color","#fad7a0")
+							//.style("color","red")
+							.attr("width","5px")
+							.attr("height","47px");
+				
+						
+					trs1.append("td")
+					   .text(function(d){return(d["offers"])})
+					   .attr("align", "left")
+					  
+					trs1.append("td").text(":")
+					trs1.append("td")
+					   .text(function(d){return(d["amount"])})
+					   .attr("align", "right")
+				
+				
+				}
+				
+				//*************************** CHURN CHART ************************//
+			
+			
+				
+				
+				d3.csv("cust_dummy2.csv",function(data){
+					IDs = data.map(function(d){return d.cust_id})
+					//console.log(IDs)
+					tabData = data[IDs.indexOf(enteredID)]
+					//console.log(tabData)
+					
+					var vals = Object.keys(tabData).map(function(key) {
+						return tabData[key];
+					});
+					//console.log(vals)
+		
+					trs = d3.select("#details").selectAll("tr")
+							.data(arr1)
+							.enter()
+							.append("tr")
+							.attr("width","5px")	
+						
+					trs.append("td")
+					   .text(function(d){return(d)})
+					   .attr("align", "left")
+					   
+					   
+					trs.append("td").text(":")
+					
+					trs.append("td")
+					   .text(function(d,i){return(vals[i])})
+					   
+					})
+					
+					
+					
+					
+			var data = d3.range(1000);
+			//console.log(data)
+
+			var val = 670;
+
+			var colors = d3.scale.linear()
+			    .domain([0,1000])
+			    .range(["#FDE5C6", "#B30201"]);
+			    
+			var scales = d3.scale.linear()
+			    .domain([0,1000])
+			    .range([0, 400]);
+
+
+			//console.log(scales(700))
+
+			//console.log(colors.domain)
+
+			var pos;
+					
+			var svg = d3.select("#abc").append("svg").attr("width",450).append("g").attr("id","indi");
+
+			var rects = svg.selectAll(".rects")
+				.data(data)
+				.enter()
+				.append("rect")
+				.attr("y", 30)
+				.attr("height", 50)
+				.attr("x", function(d){ if (d == val){ pos = scales(d)+10} return scales(d)+10;})
+				.attr("width",1)
+				.attr("fill", function(d){ return colors(d)});
+
+
+				svg.append("image")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("xlink:href", "images/arrow.jpg")
+		    	.attr("x", pos - (15/2))
+		    	.attr("y", 80)
+		    	.attr("width", 15)
+                .attr("height", 15);
+
+				svg.append("text")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("x", pos)
+		    	.attr("text-anchor","middle")
+		    	.attr("y", 40 + 75)
+		    	.text(val);
+
+		    	svg.append("text")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("x", scales(0)+10)
+		    	.attr("text-anchor","middle")
+		    	.attr("y", 95)
+		    	.text(0);
+
+		    	svg.append("text")
+		    	//.attr("class", "axisSubtitle")
+		    	.attr("x", scales(1000)+10)
+		    	.attr("text-anchor","middle")
+		    	.attr("y", 95)
+		    	.text(1000);
+					
+				/*
+					var churn_chart = c3.generate({
+							data: {
+								columns: [
+									['data', 600]
+								],
+								type: 'gauge',
+								colors:
+									{
+										data:'#82e0aa'
+									},
+							},
+							gauge: {
+									min:0,
+									max:1000
+							},
+							size: {
+								height: 180
+							},
+							
+							bindto: '#churn'
+					
+					
+				});
+			
+});
+ */
+  
+				
+				var arr2=["act_id","date","act_type","act_time","act_units","act_bytes","network","cust_id","bill_id","plan_id"]
+				
+				d3.csv("ActivityDetails1.csv",function(data){
+					
+					filteredData = data.filter(function(d){return d.cust_id == enteredID})
+					//console.log(filteredData)
+					
+					getComboVal();
+					
+					d3.select("#filter1").on("change",getComboVal);
+					
+					function getComboVal(){
+						//console.log("hi")
+						var e = document.getElementById("filter1");
+						var months = e.options[e.selectedIndex].value;
+						if(months == "six"){
+							dataFilter1 = filteredData;
+						}
+						else if(months == "three")
+						{
+							dataFilter1=data.filter(function(d) {return d.month=="4"||d.month=="5"||d.month=="6"});
+						}
+						else if(months=="two")
+						{
+							dataFilter1=data.filter(function(d) {return d.month=="6"||d.month=="5"});
+						}
+						else
+						{
+						   dataFilter1 = data.filter(function(d) {return d.date>="6/15/2016" && d.date<="6/30/2016" });
+						}
+						
+						bar_graph();
+						call_stat();
+						data_usage();
+						
+					}
+					
+				});
+					
+
+					
+		
+		             //*************************** Outgoing CALL STATS ***********************//
+					
+					function call_stat(){
+							
+							var out_callData=d3.nest()
+													.key(function(d){return d.act_type})
+													.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+													.entries(dataFilter1);
+													
+							//console.log(out_callData)	
+							
+							var outgoingData = out_callData.filter(function(d){return parseInt(d.key)==2||parseInt(d.key)==4||parseInt(d.key)==6})
+							//console.log(outgoingData)	
+							
+							outgoingData.forEach(function(d){
+								if (d.key == "2"){
+									d.key = "Local";
+								}
+								else if(d.key=="4"){
+									d.key = "STD";
+								}
+								else{
+									d.key = "Roaming";
+								}
+							});
+							
+							var pie1 = {}
+							pie1.data = {};
+							pie1.tooltip = {};
+							
+							
+							pie1.bindto = "#category";
+						
+							pie1.data.type = 'donut';
+						
+						
+							
+							var data = {};
+							var sites = [];
+							outgoingData.forEach(function(e) {
+								sites.push(e.key);
+								data[e.key] = e.values;
+							}) 
+						
+							
+							pie1.data.keys = {
+												
+												value: sites
+							};
+							pie1.data.json = [data];
+							pie1.tooltip.format={
+								value: function (value, ratio, id, index) { return value+" ("+(ratio*100).toFixed(2)+"%)"; }
+							}
+							
+							pie1.data.colors={"Local":"#ca6f1e","STD":"#cb4335","Roaming":"#b7950b"};
+							
+							d3.select("#totalmin").text(d3.sum(outgoingData,function(d){return d.values}))
+							
+							
+							var piechart = c3.generate(pie1);
+							
+							
+							//console.log(outgoingData)
+							//console.log(d3.sum(outgoingData,function(d){return d.values}))
+					
+					}
+					
+					//*********************** Data for Pie Charts ******************************//
+					/*var sum_callData=d3.nest()
+											.key(function(d){return d.act_type})
+											.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+											.entries(filteredData1);
+											
+					//console.log(sum_callData)
+					
+					
+					//******************* CALL TRENDS *************************************/
+						
+					
+					
+					function bar_graph(){
+					
+							var trend_sum_callData=d3.nest()
+													.key(function(d){return d.month})
+													.rollup(function(d){return  d3.sum(d,function(e){return e.act_time})})
+													.entries(dataFilter1);
+							//console.log(trend_sum_callData)	;
+							
+							var trendData = trend_sum_callData.filter(function(d){return parseInt(d.key)==1||parseInt(d.key)==2||parseInt(d.key)==3
+																						||parseInt(d.key)==4||parseInt(d.key)==5||parseInt(d.key)==6});
+							//console.log(trendData);
+									
+							trendData.forEach(function(d){
+										if (d.key == "1"){
+											d.key = "Jan";
+										}
+										else if(d.key=="2")
+										{
+											d.key = "Feb";
+										}
+										else if(d.key=="3")
+										{
+											d.key = "Mar";
+										}
+										else if(d.key=="4")
+										{
+											d.key = "April";
+										}
+										else if(d.key=="5")
+										{
+											d.key = "May";
+										}
+										else{
+											d.key = "Jun";
+										}
+									});
+			
+							var barTrend = {}
+							barTrend.data = {};
+							
+							//barTrend.data.onclick= {function(){ window.location.assign("file:///D:/MyStuff/Work/KYC/call_stats", '_blank')}};
+
+							
+							barTrend.bindto = "#pie12";
+						
+							barTrend.data.type = 'bar';
+							
+							
+						
+							var data_trend = {};
+							var sites_trend = [];
+							
+							trendData.forEach(function(e) {
+								sites_trend.push(e.key);
+								//console.log(sites_trend);
+								data_trend[e.key] = e.values;
+								//console.log(data_trend);
+							})
+						
+							//console.log(barTrend)  
+							barTrend.data.keys = {				
+												value: sites_trend
+							};
+							barTrend.data.json = [data_trend];
+							
+							barTrend.data.colors={"Jan":"#c0392b","Feb":"#2980b9","Mar":"#1abc9c","April":"#f39c12","May":"#5d6d7e","Jun":"#9b59b6"};
+							
+						
+							barTrend.data.labels={ format: function(value, ratio, id) {
+													//console.log(value);
+													return value;}}; 
+													
+							barTrend.axis =  {
+								x:{
+									
+									type: 'category',height : 40
+								},
+								y:{
+									label: {text:'Minutes',position:'outer-middle'},
+								
+								}
+							};
+													
+						
+					
+							var barTrend_chart = c3.generate(barTrend); 
+							
+							barTrend_chart.width=10;
+							}
+							
+							
+					//************************ DATA USAGE ***********************************//
+					
+					function data_usage(){
+					
+							var sum_dataUsage=d3.nest()
+													.key(function(d){return d.month})
+													.rollup(function(d){return  d3.sum(d,function(e){return e.act_bytes})})
+													.entries(dataFilter1);
+							//console.log(sum_dataUsage)	;
+							
+							var usageData = sum_dataUsage.filter(function(d){return parseInt(d.key)==1||parseInt(d.key)==2||parseInt(d.key)==3
+																						||parseInt(d.key)==4||parseInt(d.key)==5||parseInt(d.key)==6});
+							//console.log(usageData);
+									
+							usageData.forEach(function(d){
+										if (d.key == "1"){
+											d.key = "Jan";
+										}
+										else if(d.key=="2")
+										{
+											d.key = "Feb";
+										}
+										else if(d.key=="3")
+										{
+											d.key = "Mar";
+										}
+										else if(d.key=="4")
+										{
+											d.key = "April";
+										}
+										else if(d.key=="5")
+										{
+											d.key = "May";
+										}
+										else{
+											d.key = "Jun";
+										}
+									});
+					
+							var barDataUsage = {}
+							barDataUsage.data = {};
+							
+							barDataUsage.bindto = "#data";
+						
+							barDataUsage.data.type = 'bar';
+							
+							
+						
+							var data_trend1 = {};
+							var sites_trend1 = [];
+							
+							usageData.forEach(function(e) {
+								sites_trend1.push(e.key);
+								//console.log(sites_trend1);
+								data_trend1[e.key] = e.values;
+								//console.log(data_trend1);
+							})
+						
+							//console.log(barDataUsage)  
+							barDataUsage.data.keys = {				
+												value: sites_trend1
+							};
+							barDataUsage.data.json = [data_trend1];
+							
+							barDataUsage.data.colors={"Jan":"#c0392b","Feb":"#2980b9","Mar":"#1abc9c","April":"#f39c12","May":"#5d6d7e","Jun":"#9b59b6"};
+							
+						
+							barDataUsage.data.labels={ format: function(value, ratio, id) {
+													//console.log(value);
+													return value;}}; 
+													
+							barDataUsage.axis =  {
+								x:{
+									
+									type: 'category',height : 50
+								},
+								y:{
+									label: {text:'Data Usage(In MBs)',position:'outer-middle'},
+								
+								}
+							};
+								
+					
+							var barDataUsage_chart = c3.generate(barDataUsage); 
+							
+							barDataUsage_chart.width=10;
+					
+					}
+					
+					
+						
+					// *********************** PIE CHART FOR LOCAL DATA **************************//
+					
+		
+				/*
+					var localData = sum_callData.filter(function(d){return parseInt(d.key)<=2})
+					console.log(localData)
+
+					localData.forEach(function(d){
+						if (d.key == "1"){
+							d.key = "Incoming";
+						}
+						else{
+							d.key = "Outgoing";
+						}
+					});
+					
+					var pielocal = {}
+					pielocal.data = {};
+					
+					pielocal.bindto = "#local";
+				
+					pielocal.data.type = 'pie';
+				
+			
+					var data1 = {};
+					var sites1 = [];
+					localData.forEach(function(e) {
+						
+						sites1.push(e.key);
+						data1[e.key] = e.values;
+					}) 
+				
+					console.log(localData)
+					pielocal.data.keys = {
+										
+										value: sites1
+					};
+					pielocal.data.json = [data1];
+					
+					pielocal.data.colors={"Incoming":"#1f77b4","Outgoing":"#aec7e8"};
+					
+				
+					pielocal.data.labels={ format: function(value, ratio, id) {
+												console.log(value);
+												return value;}};
+			
+					var local_piechart = c3.generate(pielocal);*/
+					
+					
+					
+					
+					// *********************** PIE CHART FOR ROAMING DATA **************************/
+					
+		
+				
+					/*var roamData = sum_callData.filter(function(d){return parseInt(d.key)==5 || parseInt(d.key)==6})
+					//console.log(roamData)	
+					
+					roamData.forEach(function(d){
+						if (d.key == "5"){
+							d.key = "Incoming";
+						}
+						else{
+							d.key = "Outgoing";
+						}
+					});
+					var pieRoam = {}
+					pieRoam.data = {};
+					
+					pieRoam.bindto = "#roam";
+				
+					pieRoam.data.type = 'pie';
+				
+			
+					var data2 = {};
+					var sites2 = [];
+					roamData.forEach(function(e) {
+						sites2.push(e.key);
+						data2[e.key] = e.values;
+					}) 
+				
+					
+					pieRoam.data.keys = {
+										
+										value: sites2
+					};
+					pieRoam.data.json = [data2];
+					
+				
+					pieRoam.data.colors={"Incoming":"#2ca02c","Outgoing":"#98df8a"	};
+					pieRoam.data.labels= true;
+					var roam_piechart = c3.generate(pieRoam);*/
+					
+					// *********************** PIE CHART FOR STD DATA **************************//
+					
+		
+					
+					/*var stdData = sum_callData.filter(function(d){return parseInt(d.key)== 3|| parseInt(d.key)==4})
+					//console.log(stdData)	
+					
+					stdData.forEach(function(d){
+						if (d.key == "3"){
+							d.key = "Incoming";
+						}
+						else{
+							d.key = "Outgoing";
+						}
+					});
+					
+					var pieStd = {}
+					pieStd.data = {};
+					
+					pieStd.bindto = "#std";
+				
+					pieStd.data.type = 'pie';
+				
+			
+					var data3 = {};
+					var sites3 = [];
+					
+					stdData.forEach(function(e) {
+						sites3.push(e.key);
+						data3[e.key] = e.values;
+					}) 
+				
+					
+					pieStd.data.keys = {
+										
+										value: sites3
+					};
+					pieStd.data.json = [data3];
+					
+					pieStd.data.colors={"Incoming":"#ff7f0e","Outgoing":"#ffbb78"};
+					pieStd.data.labels= true;
+					
+					pieStd.data.labels={format: function(d){return d.value}};
+
+					
+					
+					var std_piechart = c3.generate(pieStd); */
+					
+					//console.log(pieStd.data)
+					
+					//******************* Offer Data **********************//
+					
+					
+					
+					
+	
+					
+
+					
+					
+			
+					
+					
+				
+	
+			
+			
+		</script>
+		</body>
+		</html>
